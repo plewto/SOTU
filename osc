@@ -7,8 +7,6 @@ from pythonosc import dispatcher
 USAGE = """
 A Simple OSC client, transmits single message and exits.
 
-USAGE:
-
    osc [options] message [values...]
 
    If 0 are 1 optional value is specified a single value is
