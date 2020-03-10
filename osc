@@ -1,0 +1,90 @@
+#! /usr/bin/python3
+
+import argparse, sys
+from pythonosc.udp_client import SimpleUDPClient
+from pythonosc import dispatcher
+
+USAGE = """
+
+NAME
+    
+    osc - simple OSC transmitter.
+
+SYNOPSIS
+
+    osc [options] 
+    
+    Transmits OSC message and terminates. 
+
+DESCRIPTION
+
+    --ip address
+         Default 127.0.0.1
+
+    -p --port n
+         Default 5005
+
+    -q --quite
+         Do not echo transmitted message to command line.
+
+    -m --message text
+         Message to be transmitted, defaults to /ping
+
+    -v --value any
+         Transmitted value, defaults to none.  
+         Currently only string values are supported.
+         Multiple words must be quoted.
+
+    -s --split
+         Splits value by white space to transmit each word
+         as a separate value.
+
+    -u --usage
+        Displays this message and exits. 
+
+REQUIREMENTS:
+
+    python 3+
+    python-osc
+"""
+
+
+enable_echo = True
+
+def usage():
+    print(USAGE)
+    sys.exit(0)
+
+
+def echo(ip, port, message, value):
+    if enable_echo:
+        frmt = "OSC Transmitted %s port %s message '%s'  value '%s'"
+        values = (ip, port, message, value)
+        print(frmt % values) 
+
+
+def transmit(ip, port, message, value):
+    echo(ip, port, message, value)
+    client = SimpleUDPClient(ip, port)
+    client.send_message(message, value)
+     
+if __name__ == '__main__':
+    parser  = argparse.ArgumentParser()
+    parser.add_argument("--ip", default="127.0.0.1", help="ip address")
+    parser.add_argument("-p", "--port", type=int, default=5005, help="Port address")
+    parser.add_argument("-q", "--quite", action="store_false", help="Do not echo transmitted message to command line.")
+    parser.add_argument("-m", "--message", default="/ping", help="Transmitted message")
+    parser.add_argument("-v", "--value", default="", help="Transmitted value (as string)")
+    parser.add_argument("-s", "--split", action="store_true", default=False, help="Splits value into separate arguments.")
+    parser.add_argument("-u", "--usage", action="store_true", help="Display usage and exit")
+    args = parser.parse_args()
+    if args.usage:
+        usage()
+    enable_echo = args.quite
+    values = args.value
+    if(args.split):
+        values = args.value.split()
+    else:
+        values = args.value
+    transmit(args.ip, args.port, args.message, values)
+    sys.exit(0)

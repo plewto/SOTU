@@ -1,0 +1,8 @@
+*.pyc
+temp*
+
+# Temp emacs files
+*backup*
+*~
+[#]*[#]
+.\#*
