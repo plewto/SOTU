@@ -7,28 +7,13 @@ from pythonosc import osc_server
 
 USAGE = """
 
-NAME
-    
-    oscr - simple OSC receiver.
-
-SYNOPSIS
+Simple OSC server.  
 
     oscr [options] 
 
     Starts OSC server and prints each received message.
     The program may be remotely terminated by transmitting the message /exit
-    
 
-DESCRIPTION
-
-    --ip address
-         Default 127.0.0.1
-
-    -p --port n
-         Default 5005
-
-    -u --usage
-        Displays this message and exits. 
 
 REQUIREMENTS:
 
@@ -44,9 +29,6 @@ OSC: """
 
 __server = None
 
-def usage():
-    print(USAGE)
-    sys.exit(0)
 
 def _exit():
     print("\noscr exited.")
@@ -76,11 +58,9 @@ def serve(ip, port):
 
 if __name__ == '__main__':
     parser  = argparse.ArgumentParser()
-    parser.add_argument("--ip", default="127.0.0.1", help="ip address")
-    parser.add_argument("-p", "--port", type=int, default=5005, help="Port address")
-    parser.add_argument("-u", "--usage", action="store_true", help="Display usage and exit")
+    parser.usage = USAGE
+    parser.add_argument("--ip", default="127.0.0.1", help="ip address, default 127.0.0.1")
+    parser.add_argument("-p", "--port", type=int, default=5005, help="default 5005")
     args = parser.parse_args()
-    if args.usage:
-        usage()
     serve(args.ip, args.port)
     sys.exit(0)
