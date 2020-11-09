@@ -28,7 +28,7 @@ Starting OSC server  {} port {}
 OSC: """
 
 __server = None
-
+__port = 5005
 
 def _exit():
     print("\noscr exited.")
@@ -38,14 +38,16 @@ def _exit():
     
 
 def _message_handler(*arguments):
-    print("{}\nOSC: ".format(arguments), end="")
+    #print("{}\nOSC: ".format(arguments), end="")
+    print(f"{arguments}\nOSC({__port}): ", end="")
     if arguments and "exit" in arguments[0]:
         _exit()
     
 def serve(ip, port):
-    global __server
+    global __server, __port
     try:
         if __server is None:
+            __port = port
             print(BANNER.format(ip, port), end="")
             dsp = dispatcher.Dispatcher()
             dsp.map("/*", _message_handler)
